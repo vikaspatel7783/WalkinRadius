@@ -1,8 +1,12 @@
 package com.walkinradius.beacon.presenter;
 
+import com.walkinradius.beacon.networking.AndroidNetworking;
+import com.walkinradius.beacon.networking.AndroidNetworkingImpl;
+
 public class LoginActivityPresenter implements LoginViewContract.LoginViewCallbacks {
 
     private final LoginViewContract.LoginView mLoginActivity;
+    private AndroidNetworking mAndroidNetworking = new AndroidNetworkingImpl();
 
     public LoginActivityPresenter(LoginViewContract.LoginView loginActivity) {
         this.mLoginActivity = loginActivity;
@@ -11,20 +15,40 @@ public class LoginActivityPresenter implements LoginViewContract.LoginViewCallba
     @Override
     public void onLoginButtonClick(String userName, String password) {
 
+        if (!isCredentialsValidForLength(userName, password)) {
+            return;
+        }
+
+        mLoginActivity.showProgressBar();
+
+        mAndroidNetworking.validateCredentials(userName, password, callback);
+
+    }
+
+    AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
+
+        @Override
+        public void onSuccess() {
+            mLoginActivity.hideProgressBar();
+        }
+    };
+
+    private boolean isCredentialsValidForLength(String userName, String password) {
+
         LoginFieldsValidator loginFieldsValidator = new LoginFieldsValidator();
 
         boolean isUserNameLengthNonZero = loginFieldsValidator.isLengthNonZero(userName);
         if (!isUserNameLengthNonZero) {
             mLoginActivity.showMessage("User name should not be empty");
-            return;
+            return false;
         }
 
         boolean isPasswordLengthNonZero = loginFieldsValidator.isLengthNonZero(password);
         if (!isPasswordLengthNonZero) {
             mLoginActivity.showMessage("Password should not be empty");
-            return;
+            return false;
         }
 
-        mLoginActivity.showProgressBar();
+        return true;
     }
 }
