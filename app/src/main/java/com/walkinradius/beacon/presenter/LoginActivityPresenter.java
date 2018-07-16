@@ -1,12 +1,13 @@
 package com.walkinradius.beacon.presenter;
 
 import com.walkinradius.beacon.networking.AndroidNetworking;
-import com.walkinradius.beacon.networking.AndroidNetworkingImpl;
+import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
 
 public class LoginActivityPresenter implements LoginViewContract.LoginViewCallbacks {
 
     private final LoginViewContract.LoginView mLoginActivity;
-    private AndroidNetworking mAndroidNetworking = new AndroidNetworkingImpl();
+
+    private AndroidNetworking mAndroidNetworking = new RetrofitNetworking();
 
     public LoginActivityPresenter(LoginViewContract.LoginView loginActivity) {
         this.mLoginActivity = loginActivity;
@@ -25,10 +26,17 @@ public class LoginActivityPresenter implements LoginViewContract.LoginViewCallba
 
     }
 
-    AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
+    private AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
 
         @Override
         public void onSuccess() {
+            mLoginActivity.showMessage("Success");
+            mLoginActivity.hideProgressBar();
+        }
+
+        @Override
+        public void onFailure() {
+            mLoginActivity.showMessage("Failed");
             mLoginActivity.hideProgressBar();
         }
     };
