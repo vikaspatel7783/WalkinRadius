@@ -35,8 +35,8 @@ public class LoginActivityPresenter implements LoginViewContract.LoginViewCallba
         }
 
         @Override
-        public void onFailure() {
-            mLoginActivity.showMessage("Failed");
+        public void onFailure(String message) {
+            mLoginActivity.showMessage(message);
             mLoginActivity.hideProgressBar();
         }
     };

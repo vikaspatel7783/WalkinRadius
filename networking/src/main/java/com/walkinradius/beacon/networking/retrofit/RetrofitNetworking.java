@@ -2,6 +2,7 @@ package com.walkinradius.beacon.networking.retrofit;
 
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.model.Note;
+import com.walkinradius.beacon.networking.model.Curdata;
 import com.walkinradius.beacon.networking.model.SubscriberCredentials;
 
 import retrofit2.Call;
@@ -22,11 +23,10 @@ public class RetrofitNetworking implements AndroidNetworking {
         subscriberCredentials.setUserName(userName);
         subscriberCredentials.setPassword(password);
 
-        //Call<SubscriberCredentials> serviceCall = serviceApi.validateSubscriber(subscriberCredentials);
+        Call<Curdata> subscriberCredentialsCall = serviceApi.validateSubscriber(userName, password);
 
-        serviceApi.saveNote(getNote()).enqueue(noteCallback);
-
-        //serviceCall.enqueue(subscriberAuthCallback);
+        subscriberCredentialsCall.enqueue(subscriberAuthCallback);
+        //serviceApi.saveNote(getNote()).enqueue(noteCallback);
 
     }
 
@@ -41,23 +41,25 @@ public class RetrofitNetworking implements AndroidNetworking {
 
         @Override
         public void onFailure(Call<Note> call, Throwable t) {
-                mCallback.onFailure();
+                mCallback.onFailure(t.getMessage());
         }
     };
 
-    retrofit2.Callback<SubscriberCredentials> subscriberAuthCallback = new retrofit2.Callback<SubscriberCredentials>() {
+    retrofit2.Callback<Curdata> subscriberAuthCallback = new retrofit2.Callback<Curdata>() {
 
 
         @Override
-        public void onResponse(Call<SubscriberCredentials> call, Response<SubscriberCredentials> response) {
+        public void onResponse(Call<Curdata> call, Response<Curdata> response) {
             if (response.isSuccessful()) {
                 mCallback.onSuccess();
+            } else {
+                mCallback.onFailure(response.message());
             }
         }
 
         @Override
-        public void onFailure(Call<SubscriberCredentials> call, Throwable t) {
-            mCallback.onFailure();
+        public void onFailure(Call<Curdata> call, Throwable t) {
+            mCallback.onFailure(t.getMessage());
         }
     };
 

@@ -6,7 +6,7 @@ public interface AndroidNetworking {
 
         void onSuccess();
 
-        void onFailure();
+        void onFailure(String message);
     }
 
     void validateCredentials(String userName, String password, Callback callback);
