@@ -3,9 +3,9 @@ package com.walkinradius.beacon.presenter;
 class LoginFieldsValidator {
 
 
-    public boolean isLengthNonZero(String userName) {
+    public boolean isLengthNonZero(String value) {
 
-        if (null == userName || userName.length() == 0) {
+        if (null == value || value.length() == 0) {
             return false;
         }
 

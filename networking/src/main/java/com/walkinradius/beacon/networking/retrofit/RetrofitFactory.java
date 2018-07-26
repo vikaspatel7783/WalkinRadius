@@ -22,7 +22,7 @@ public class RetrofitFactory {
 
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL_WALKIN_RADIUS)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 

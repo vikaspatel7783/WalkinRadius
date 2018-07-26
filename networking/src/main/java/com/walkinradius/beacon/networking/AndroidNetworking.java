@@ -4,11 +4,13 @@ public interface AndroidNetworking {
 
     interface Callback {
 
-        void onSuccess();
+        void onSuccess(String message);
 
         void onFailure(String message);
     }
 
     void validateCredentials(String userName, String password, Callback callback);
+
+    void getBeaconsInfo(Callback callback);
 
 }

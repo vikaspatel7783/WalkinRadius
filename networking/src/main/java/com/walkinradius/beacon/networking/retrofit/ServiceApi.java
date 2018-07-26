@@ -1,7 +1,10 @@
 package com.walkinradius.beacon.networking.retrofit;
 
+import com.google.gson.JsonObject;
+import com.walkinradius.beacon.networking.model.BeaconInfo;
 import com.walkinradius.beacon.networking.model.Note;
-import com.walkinradius.beacon.networking.model.Curdata;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -13,9 +16,11 @@ public interface ServiceApi {
 
     @GET("client_login.php")
         //@FormUrlEncoded
-    Call<Curdata> validateSubscriber(@Query("username") String userName,
-                                     @Query("password") String password);
+    Call<JsonObject> validateSubscriber(@Query("username") String userName,
+                                        @Query("password") String password);
 
+    @GET("get_template_link.php?username=98119&&status=Active")
+    Call<List<BeaconInfo>> getBeaconInfo();
 
     @POST("/posts")
         //@FormUrlEncoded

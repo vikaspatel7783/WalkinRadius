@@ -23,14 +23,15 @@ public class LoginActivityPresenter implements LoginViewContract.LoginViewCallba
         mLoginActivity.showProgressBar();
 
         mAndroidNetworking.validateCredentials(userName, password, callback);
+        //mAndroidNetworking.getBeaconsInfo(callback);
 
     }
 
     private AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
 
         @Override
-        public void onSuccess() {
-            mLoginActivity.showMessage("Success");
+        public void onSuccess(String message) {
+            mLoginActivity.showMessage(message);
             mLoginActivity.hideProgressBar();
         }
 

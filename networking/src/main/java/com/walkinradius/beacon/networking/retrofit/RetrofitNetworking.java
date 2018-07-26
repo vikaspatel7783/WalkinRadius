@@ -1,9 +1,13 @@
 package com.walkinradius.beacon.networking.retrofit;
 
+import com.google.gson.JsonObject;
 import com.walkinradius.beacon.networking.AndroidNetworking;
+import com.walkinradius.beacon.networking.callback.BeaconsInfoCallback;
+import com.walkinradius.beacon.networking.callback.SubscriberAuthCallback;
+import com.walkinradius.beacon.networking.model.BeaconInfo;
 import com.walkinradius.beacon.networking.model.Note;
-import com.walkinradius.beacon.networking.model.Curdata;
-import com.walkinradius.beacon.networking.model.SubscriberCredentials;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -19,15 +23,19 @@ public class RetrofitNetworking implements AndroidNetworking {
 
         this.mCallback = callback;
 
-        SubscriberCredentials subscriberCredentials = new SubscriberCredentials();
-        subscriberCredentials.setUserName(userName);
-        subscriberCredentials.setPassword(password);
+        Call<JsonObject> subscriberCredentialsCall = serviceApi.validateSubscriber(userName, password);
 
-        Call<Curdata> subscriberCredentialsCall = serviceApi.validateSubscriber(userName, password);
-
-        subscriberCredentialsCall.enqueue(subscriberAuthCallback);
+        subscriberCredentialsCall.enqueue(new SubscriberAuthCallback(mCallback));
         //serviceApi.saveNote(getNote()).enqueue(noteCallback);
 
+    }
+
+    @Override
+    public void getBeaconsInfo(Callback callback) {
+        this.mCallback = callback;
+
+        Call<List<BeaconInfo>> beaconInfo = serviceApi.getBeaconInfo();
+        beaconInfo.enqueue(new BeaconsInfoCallback(mCallback));
     }
 
     retrofit2.Callback<Note> noteCallback = new retrofit2.Callback<Note>() {
@@ -35,7 +43,7 @@ public class RetrofitNetworking implements AndroidNetworking {
         @Override
         public void onResponse(Call<Note> call, Response<Note> response) {
             if (response.isSuccessful()) {
-                mCallback.onSuccess();
+                mCallback.onSuccess(response.body().getBody());
             }
         }
 
@@ -45,23 +53,6 @@ public class RetrofitNetworking implements AndroidNetworking {
         }
     };
 
-    retrofit2.Callback<Curdata> subscriberAuthCallback = new retrofit2.Callback<Curdata>() {
-
-
-        @Override
-        public void onResponse(Call<Curdata> call, Response<Curdata> response) {
-            if (response.isSuccessful()) {
-                mCallback.onSuccess();
-            } else {
-                mCallback.onFailure(response.message());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<Curdata> call, Throwable t) {
-            mCallback.onFailure(t.getMessage());
-        }
-    };
 
     private Note getNote() {
         Note note = new Note();
