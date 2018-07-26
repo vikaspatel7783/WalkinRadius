@@ -9,6 +9,8 @@ public class LoginViewContract {
         void hideProgressBar();
 
         void showMessage(String message);
+
+        void showDashboard();
     }
 
     public interface LoginViewCallbacks {

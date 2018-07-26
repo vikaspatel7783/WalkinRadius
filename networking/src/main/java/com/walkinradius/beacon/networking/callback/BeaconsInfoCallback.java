@@ -19,14 +19,18 @@ public class BeaconsInfoCallback implements retrofit2.Callback<List<BeaconInfo>>
     @Override
     public void onResponse(Call<List<BeaconInfo>> call, Response<List<BeaconInfo>> response) {
         if (response.isSuccessful()) {
-            mCallback.onSuccess(response.body().get(0).ibeacon_model_no);
+            mCallback.onSuccess(getDisplayString(response.body().get(0)));
         } else {
             mCallback.onFailure(response.message());
         }
     }
 
-    private BeaconInfo getBeacon(BeaconInfo beaconInfo) {
-        return null;
+    private String getDisplayString(BeaconInfo beaconInfo) {
+        return beaconInfo.ibeacon_model_no + "\n" +
+                beaconInfo.location +"\n"+
+                beaconInfo.status +"\n"+
+                beaconInfo.temp_link +"\n"+
+                beaconInfo.uuid_no;
     }
 
     @Override

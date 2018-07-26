@@ -1,5 +1,6 @@
 package com.walkinradius.beacon.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -52,6 +53,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showDashboard() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+
+        finish();
     }
 
     public String getUserName() {
