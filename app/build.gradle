@@ -30,5 +30,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //TODO: should presenter need to parse data?
+    implementation 'com.google.code.gson:gson:2.8.2'
+
     implementation project(path: ':networking')
 }

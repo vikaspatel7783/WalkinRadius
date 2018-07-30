@@ -8,4 +8,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="StyleButton">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_selector</item>
+    </style>
+
+    <style name="StyleTextLabel">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/actionbar</item>
+    </style>
+
+
+
 </resources>

@@ -3,11 +3,14 @@ package com.walkinradius.beacon.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.walkinradius.beacon.R;
 import com.walkinradius.beacon.adapter.BeaconsListAdapter;
 import com.walkinradius.beacon.networking.model.BeaconInfo;
@@ -44,10 +47,29 @@ public class DashboardActivity extends Activity implements DashboardViewContract
 
     @Override
     public void showMessage(String message) {
-        //((TextView)findViewById(R.id.beacons_info)).setText(message);
     }
 
     @Override
+    public void handleBeaconsList(String beaconsListJson) {
+        List<BeaconInfo> beaconsList = new Gson().fromJson(beaconsListJson, new TypeToken<List<BeaconInfo>>(){}.getType());
+        /*addMockBeaconInfoToList(beaconsList);
+        addMockBeaconInfoToList(beaconsList);
+        addMockBeaconInfoToList(beaconsList);*/
+        handleBeaconsList(beaconsList);
+    }
+
+    private void addMockBeaconInfoToList(List<BeaconInfo> beaconsList) {
+        BeaconInfo beaconInfo = new BeaconInfo();
+        beaconInfo.uuid_no = "U333";
+        beaconInfo.temp_link = "http://www.google.com";
+        beaconInfo.status = "Active";
+        beaconInfo.location = "North side";
+        beaconInfo.ibeacon_model_no = "Win4000R";
+        beaconInfo.temp_name = "Beacon temp name";
+
+        beaconsList.add(beaconInfo);
+    }
+
     public void handleBeaconsList(List<BeaconInfo> beaconsList) {
         mRecyclerView = (RecyclerView) findViewById(R.id.beacons_list);
 
@@ -61,5 +83,7 @@ public class DashboardActivity extends Activity implements DashboardViewContract
 
         BeaconsListAdapter beaconsListAdapter = new BeaconsListAdapter(beaconsList);
         mRecyclerView.setAdapter(beaconsListAdapter);
+
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.HORIZONTAL));
     }
 }
