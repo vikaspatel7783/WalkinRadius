@@ -1,7 +1,10 @@
 package com.walkinradius.beacon.presenter;
 
 import com.walkinradius.beacon.networking.AndroidNetworking;
+import com.walkinradius.beacon.networking.model.BeaconInfo;
 import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
+
+import java.util.List;
 
 public class DashboardViewPresenter implements DashboardViewContract.DashboardViewCallbacks {
 
@@ -22,9 +25,14 @@ public class DashboardViewPresenter implements DashboardViewContract.DashboardVi
     private AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
 
         @Override
-        public void onSuccess(String message) {
+        public void onSuccess(List<BeaconInfo> beaconsList) {
             mDashboardView.hideProgressBar();
-            mDashboardView.showMessage(message);
+            mDashboardView.handleBeaconsList(beaconsList);
+        }
+
+        @Override
+        public void onSuccess(String message) {
+
         }
 
         @Override

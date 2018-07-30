@@ -1,5 +1,19 @@
 <resources>
+
     <string name="app_name">WalkinRadius</string>
+
     <string name="screen_name_subscriber_login">SUBSCRIBER LOGIN</string>
     <string name="screen_name_dashboard">BEACONS LIST</string>
+
+    <!-- Login field validation -->
+    <string name="message_username_or_password_blank">User name or password can not be blank</string>
+
+    <!-- Dashboard Beacons list -->
+    <string name="label_uuid">UUID</string>
+    <string name="label_ibeacon_model">MODEL</string>
+    <string name="label_temp_name">TEMP NAME</string>
+    <string name="label_temp_link">TEMP LINK</string>
+    <string name="label_location">LOCATION</string>
+    <string name="label_status">STATUS</string>
+
 </resources>

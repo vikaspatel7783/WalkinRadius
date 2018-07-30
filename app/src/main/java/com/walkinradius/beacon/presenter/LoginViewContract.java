@@ -10,6 +10,8 @@ public class LoginViewContract {
 
         void showMessage(String message);
 
+        void showUserNamePasswordBlankMessage();
+
         void showDashboard();
     }
 

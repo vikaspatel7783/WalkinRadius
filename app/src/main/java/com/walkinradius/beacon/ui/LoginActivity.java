@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.walkinradius.beacon.R;
-import com.walkinradius.beacon.presenter.LoginActivityPresenter;
+import com.walkinradius.beacon.presenter.LoginViewPresenter;
 import com.walkinradius.beacon.presenter.LoginViewContract;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, LoginViewContract.LoginView {
@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText edtTextPassword;
     private EditText edtTextUserName;
     private ProgressBar pgBarLogin;
-    private LoginActivityPresenter loginActivityPresenter;
+    private LoginViewPresenter loginViewPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +32,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
 
-        loginActivityPresenter = new LoginActivityPresenter(this);
+        loginViewPresenter = new LoginViewPresenter(this);
     }
 
     @Override
     public void onClick(View view) {
-        loginActivityPresenter.onLoginButtonClick(getUserName(), getPassword());
+        loginViewPresenter.onLoginButtonClick(getUserName(), getPassword());
     }
 
     @Override
@@ -53,6 +53,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showUserNamePasswordBlankMessage() {
+        showMessage(getResources().getString(R.string.message_username_or_password_blank));
     }
 
     @Override

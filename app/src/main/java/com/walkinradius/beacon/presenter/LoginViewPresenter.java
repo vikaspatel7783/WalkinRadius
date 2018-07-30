@@ -3,13 +3,13 @@ package com.walkinradius.beacon.presenter;
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
 
-public class LoginActivityPresenter implements LoginViewContract.LoginViewCallbacks {
+public class LoginViewPresenter implements LoginViewContract.LoginViewCallbacks {
 
     private final LoginViewContract.LoginView mLoginActivity;
 
     private AndroidNetworking mAndroidNetworking = new RetrofitNetworking();
 
-    public LoginActivityPresenter(LoginViewContract.LoginView loginActivity) {
+    public LoginViewPresenter(LoginViewContract.LoginView loginActivity) {
         this.mLoginActivity = loginActivity;
     }
 
@@ -48,13 +48,13 @@ public class LoginActivityPresenter implements LoginViewContract.LoginViewCallba
 
         boolean isUserNameLengthNonZero = loginFieldsValidator.isLengthNonZero(userName);
         if (!isUserNameLengthNonZero) {
-            mLoginActivity.showMessage("User name should not be empty");
+            mLoginActivity.showUserNamePasswordBlankMessage();
             return false;
         }
 
         boolean isPasswordLengthNonZero = loginFieldsValidator.isLengthNonZero(password);
         if (!isPasswordLengthNonZero) {
-            mLoginActivity.showMessage("Password should not be empty");
+            mLoginActivity.showUserNamePasswordBlankMessage();
             return false;
         }
 
