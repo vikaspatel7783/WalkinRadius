@@ -2,7 +2,6 @@ package com.walkinradius.beacon.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +11,7 @@ import com.walkinradius.beacon.R;
 import com.walkinradius.beacon.presenter.LoginViewContract;
 import com.walkinradius.beacon.presenter.LoginViewPresenter;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, LoginViewContract.LoginView {
+public class LoginActivity extends ParentActivity implements View.OnClickListener, LoginViewContract.LoginView {
 
     private EditText edtTextPassword;
     private EditText edtTextUserName;

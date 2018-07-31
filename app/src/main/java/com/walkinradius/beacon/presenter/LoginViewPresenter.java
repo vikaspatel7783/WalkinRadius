@@ -29,7 +29,7 @@ public class LoginViewPresenter implements LoginViewContract.LoginViewCallbacks 
 
         @Override
         public void onSuccess(String message) {
-            mLoginActivity.showMessage(message);
+            //mLoginActivity.showMessage(message);
             mLoginActivity.hideProgressBar();
 
             mLoginActivity.showDashboard();

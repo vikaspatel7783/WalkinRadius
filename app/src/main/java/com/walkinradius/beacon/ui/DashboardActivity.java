@@ -2,7 +2,6 @@ package com.walkinradius.beacon.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,7 @@ import com.walkinradius.beacon.presenter.DashboardViewPresenter;
 
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity implements DashboardViewContract.DashboardView {
+public class DashboardActivity extends ParentActivity implements DashboardViewContract.DashboardView {
 
     private ProgressBar pgBarLogin;
     private RecyclerView mRecyclerView;
