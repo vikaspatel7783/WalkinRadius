@@ -19,8 +19,10 @@ public interface ServiceApi {
     Call<JsonObject> validateSubscriber(@Query("username") String userName,
                                         @Query("password") String password);
 
-    @GET("get_template_link.php?username=98119&&status=Active")
-    Call<List<BeaconInfo>> getBeaconInfo();
+    //@GET("get_template_link.php?username=98119&&status=Active")
+    @GET("get_template_link.php")
+    Call<List<BeaconInfo>> getBeaconInfo(@Query("username") String userName,
+                                         @Query("status") String status);
 
     @POST("/posts")
         //@FormUrlEncoded

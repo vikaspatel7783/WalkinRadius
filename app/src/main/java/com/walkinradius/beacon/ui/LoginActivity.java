@@ -1,17 +1,16 @@
 package com.walkinradius.beacon.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.walkinradius.beacon.R;
-import com.walkinradius.beacon.presenter.LoginViewPresenter;
 import com.walkinradius.beacon.presenter.LoginViewContract;
+import com.walkinradius.beacon.presenter.LoginViewPresenter;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, LoginViewContract.LoginView {
 
@@ -52,12 +51,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        UiUtils.getAlertDialog(this, "LOGIN", message).show();
     }
 
     @Override
     public void showUserNamePasswordBlankMessage() {
-        showMessage(getResources().getString(R.string.message_username_or_password_blank));
+        UiUtils.getAlertDialog(this, "LOGIN", getResources().getString(R.string.message_username_or_password_blank)).show();
     }
 
     @Override
