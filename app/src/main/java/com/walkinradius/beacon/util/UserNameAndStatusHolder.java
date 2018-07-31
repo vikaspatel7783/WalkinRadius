@@ -1,4 +1,4 @@
-package com.walkinradius.beacon.Util;
+package com.walkinradius.beacon.util;
 
 public class UserNameAndStatusHolder {
 

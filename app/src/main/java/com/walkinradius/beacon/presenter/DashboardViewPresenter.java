@@ -1,6 +1,6 @@
 package com.walkinradius.beacon.presenter;
 
-import com.walkinradius.beacon.Util.UserNameAndStatusHolder;
+import com.walkinradius.beacon.util.UserNameAndStatusHolder;
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
 
