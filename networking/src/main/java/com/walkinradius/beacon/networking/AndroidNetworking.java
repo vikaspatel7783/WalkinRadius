@@ -11,6 +11,6 @@ public interface AndroidNetworking {
 
     void validateCredentials(String userName, String password, Callback callback);
 
-    void getBeaconsInfo(Callback callback);
+    void getBeaconsInfo(Callback callback, String userName, String status);
 
 }

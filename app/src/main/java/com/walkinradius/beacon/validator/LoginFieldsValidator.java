@@ -1,6 +1,6 @@
-package com.walkinradius.beacon.presenter;
+package com.walkinradius.beacon.validator;
 
-class LoginFieldsValidator {
+public class LoginFieldsValidator {
 
 
     public boolean isLengthNonZero(String value) {

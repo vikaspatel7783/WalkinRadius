@@ -31,10 +31,10 @@ public class RetrofitNetworking implements AndroidNetworking {
     }
 
     @Override
-    public void getBeaconsInfo(Callback callback) {
+    public void getBeaconsInfo(Callback callback, String userName, String status) {
         this.mCallback = callback;
 
-        Call<List<BeaconInfo>> beaconInfo = serviceApi.getBeaconInfo("98119", "Active");
+        Call<List<BeaconInfo>> beaconInfo = serviceApi.getBeaconInfo(userName, status);
         beaconInfo.enqueue(new BeaconsInfoCallback(mCallback));
     }
 

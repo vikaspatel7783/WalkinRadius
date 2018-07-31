@@ -1,10 +1,10 @@
 package com.walkinradius.beacon.presenter;
 
+import com.walkinradius.beacon.validator.LoginFieldsValidator;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class LoginFieldsValidatorTest {
 

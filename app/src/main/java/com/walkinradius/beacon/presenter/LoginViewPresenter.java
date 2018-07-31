@@ -1,13 +1,16 @@
 package com.walkinradius.beacon.presenter;
 
+import com.walkinradius.beacon.Util.UserNameAndStatusHolder;
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
+import com.walkinradius.beacon.validator.LoginFieldsValidator;
 
 public class LoginViewPresenter implements LoginViewContract.LoginViewCallbacks {
 
     private final LoginViewContract.LoginView mLoginActivity;
 
     private AndroidNetworking mAndroidNetworking = new RetrofitNetworking();
+    private String mUserName;
 
     public LoginViewPresenter(LoginViewContract.LoginView loginActivity) {
         this.mLoginActivity = loginActivity;
@@ -22,6 +25,8 @@ public class LoginViewPresenter implements LoginViewContract.LoginViewCallbacks 
 
         mLoginActivity.showProgressBar();
 
+        this.mUserName = userName;
+
         mAndroidNetworking.validateCredentials(userName, password, callback);
     }
 
@@ -29,7 +34,11 @@ public class LoginViewPresenter implements LoginViewContract.LoginViewCallbacks 
 
         @Override
         public void onSuccess(String message) {
-            //mLoginActivity.showMessage(message);
+
+            UserNameAndStatusHolder.getInstance().setUserName(mUserName);
+            //TODO: use enum or typeDef
+            UserNameAndStatusHolder.getInstance().setStatus("Active");
+
             mLoginActivity.hideProgressBar();
 
             mLoginActivity.showDashboard();

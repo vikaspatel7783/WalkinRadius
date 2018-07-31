@@ -1,5 +1,6 @@
 package com.walkinradius.beacon.presenter;
 
+import com.walkinradius.beacon.Util.UserNameAndStatusHolder;
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.retrofit.RetrofitNetworking;
 
@@ -16,7 +17,8 @@ public class DashboardViewPresenter implements DashboardViewContract.DashboardVi
     @Override
     public void onActivityCreated() {
         mDashboardView.showProgressBar();
-        mAndroidNetworking.getBeaconsInfo(callback);
+        UserNameAndStatusHolder instance = UserNameAndStatusHolder.getInstance();
+        mAndroidNetworking.getBeaconsInfo(callback, instance.getUserName(), instance.getStatus());
     }
 
     private AndroidNetworking.Callback callback = new AndroidNetworking.Callback() {
