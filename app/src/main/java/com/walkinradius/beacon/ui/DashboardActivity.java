@@ -46,6 +46,7 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
 
     @Override
     public void showMessage(String message) {
+        UiUtils.getAlertDialog(this, "NO BEACONS", "No beacons received.").show();
     }
 
     @Override
@@ -70,6 +71,12 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
     }
 
     public void handleBeaconsList(List<BeaconInfo> beaconsList) {
+
+        if (null == beaconsList || beaconsList.size() == 0) {
+            showMessage("No beacons received.");
+            return;
+        }
+
         mRecyclerView = (RecyclerView) findViewById(R.id.beacons_list);
 
         // use this setting to improve performance if you know that changes
