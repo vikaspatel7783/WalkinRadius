@@ -1,5 +1,7 @@
 package com.walkinradius.beacon.presenter;
 
+import com.walkinradius.beacon.networking.model.BeaconInfo;
+
 public class DashboardViewContract {
 
     public interface DashboardView {
@@ -11,11 +13,15 @@ public class DashboardViewContract {
         void showMessage(String message);
 
         void handleBeaconsList(String beaconsListJson);
+
+        void showNextActivity(BeaconInfo beaconInfo);
     }
 
     public interface DashboardViewCallbacks {
 
         void onActivityCreated();
+
+        void onBeaconSelected(BeaconInfo beaconInfo);
 
     }
 

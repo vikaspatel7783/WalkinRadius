@@ -1,9 +1,9 @@
 package com.walkinradius.beacon.networking.callback;
 
-public abstract class GenericCallback<T> {
+public interface GenericCallback<T> {
 
-    abstract void onSuccess(T message);
+    void onSuccess(T message);
 
-    abstract void onFailure(T message);
+    void onFailure(T message);
 
 }

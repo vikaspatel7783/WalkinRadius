@@ -50,12 +50,12 @@ public class LoginActivity extends ParentActivity implements View.OnClickListene
 
     @Override
     public void showMessage(String message) {
-        UiUtils.getAlertDialog(this, "LOGIN", message).show();
+        UiUtils.getAlertDialog(this, "LOGIN", message, null).show();
     }
 
     @Override
     public void showUserNamePasswordBlankMessage() {
-        UiUtils.getAlertDialog(this, "LOGIN", getResources().getString(R.string.message_username_or_password_blank)).show();
+        UiUtils.getAlertDialog(this, "LOGIN", getResources().getString(R.string.message_username_or_password_blank), null).show();
     }
 
     @Override

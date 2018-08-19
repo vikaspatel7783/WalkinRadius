@@ -4,6 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- BLUETOOTH -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +22,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +32,11 @@
         </activity>
 
         <activity android:name=".ui.DashboardActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"/>
+
+        <activity android:name=".ui.BeaconScanActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"/>
 
     </application>

@@ -2,9 +2,6 @@
 
     <string name="app_name">WalkinRadius</string>
 
-    <string name="screen_name_subscriber_login">SUBSCRIBER LOGIN</string>
-    <string name="screen_name_dashboard">BEACONS LIST</string>
-
     <string name="label_user_name">USER NAME</string>
     <string name="label_password">PASSWORD</string>
 

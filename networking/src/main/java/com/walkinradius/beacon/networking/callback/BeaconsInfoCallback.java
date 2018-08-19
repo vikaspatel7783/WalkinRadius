@@ -1,5 +1,7 @@
 package com.walkinradius.beacon.networking.callback;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.walkinradius.beacon.networking.AndroidNetworking;
 import com.walkinradius.beacon.networking.model.BeaconInfo;
@@ -19,8 +21,11 @@ public class BeaconsInfoCallback implements retrofit2.Callback<List<BeaconInfo>>
 
     @Override
     public void onResponse(Call<List<BeaconInfo>> call, Response<List<BeaconInfo>> response) {
+        String jsonResponse = new Gson().toJson(response.body());
+        Log.d(BeaconsInfoCallback.class.getSimpleName(), jsonResponse);
+
         if (response.isSuccessful()) {
-            mCallback.onSuccess(new Gson().toJson(response.body())); // json string of List<BeaconInfo>
+            mCallback.onSuccess(jsonResponse); // json string of List<BeaconInfo>
         } else {
             mCallback.onFailure(response.message());
         }

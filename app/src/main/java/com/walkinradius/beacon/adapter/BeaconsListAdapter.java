@@ -15,10 +15,12 @@ import java.util.List;
 
 public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.ViewHolder> {
 
+    private final BeaconSelectListener mBeaconSelectListener;
     private List<BeaconInfo> mBeaconsInfo;
 
-    public BeaconsListAdapter(List<BeaconInfo> beaconsInfo) {
+    public BeaconsListAdapter(List<BeaconInfo> beaconsInfo, BeaconSelectListener beaconSelectListener) {
         mBeaconsInfo = beaconsInfo;
+        this.mBeaconSelectListener = beaconSelectListener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,7 +54,7 @@ public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BeaconsListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BeaconsListAdapter.ViewHolder holder, final int position) {
         BeaconInfo beaconInfo = getBeacon(position);
         holder.mTextViewBeaconStatus.setText(beaconInfo.status);
         holder.mTextViewBeaconLocation.setText(beaconInfo.location);
@@ -60,6 +62,13 @@ public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.
         holder.mTextViewBeaconTempName.setText(beaconInfo.temp_name);
         holder.mTextViewBeaconModel.setText(beaconInfo.ibeacon_model_no);
         holder.mTextViewBeaconUUID.setText(beaconInfo.uuid_no);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBeaconSelectListener.onBeaconSelected(getBeacon(position));
+            }
+        });
     }
 
     @Override
@@ -70,4 +79,9 @@ public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.
     private BeaconInfo getBeacon(int position) {
         return mBeaconsInfo.get(position);
     }
+
+    public interface BeaconSelectListener {
+        void onBeaconSelected(BeaconInfo beaconInfo);
+    }
+
 }

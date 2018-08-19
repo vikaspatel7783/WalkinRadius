@@ -1,5 +1,7 @@
 package com.walkinradius.beacon.networking.callback;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.walkinradius.beacon.networking.AndroidNetworking;
@@ -21,6 +23,9 @@ public class SubscriberAuthCallback implements retrofit2.Callback<JsonObject> {
 
     @Override
     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+        Log.d(SubscriberAuthCallback.class.getSimpleName(), new Gson().toJson(response.body()));
+
         if (response.isSuccessful()) {
 
             Curdata authResponse = new Gson().fromJson(

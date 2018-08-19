@@ -1,5 +1,6 @@
 package com.walkinradius.beacon.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,10 +19,11 @@ import com.walkinradius.beacon.presenter.DashboardViewPresenter;
 
 import java.util.List;
 
-public class DashboardActivity extends ParentActivity implements DashboardViewContract.DashboardView {
+public class DashboardActivity extends ParentActivity implements DashboardViewContract.DashboardView, BeaconsListAdapter.BeaconSelectListener {
 
     private ProgressBar pgBarLogin;
     private RecyclerView mRecyclerView;
+    private DashboardViewPresenter mDashboardViewPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +32,7 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
 
         pgBarLogin = findViewById(R.id.pgBarLogin);
 
-        DashboardViewPresenter mDashboardViewPresenter = new DashboardViewPresenter(this);
+        mDashboardViewPresenter = new DashboardViewPresenter(this);
         mDashboardViewPresenter.onActivityCreated();
     }
 
@@ -46,7 +48,7 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
 
     @Override
     public void showMessage(String message) {
-        UiUtils.getAlertDialog(this, "NO BEACONS", "No beacons received.").show();
+        UiUtils.getAlertDialog(this, "NO BEACONS", message, null).show();
     }
 
     @Override
@@ -56,6 +58,20 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
         addMockBeaconInfoToList(beaconsList);
         addMockBeaconInfoToList(beaconsList);*/
         handleBeaconsList(beaconsList);
+    }
+
+    @Override
+    public void showNextActivity(BeaconInfo beaconInfo) {
+        Intent intentScanActivity = new Intent(this, BeaconScanActivity.class);
+
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_TEMP_NAME, beaconInfo.temp_name);
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_LOCATION, beaconInfo.location);
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_MODEL, beaconInfo.ibeacon_model_no);
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_STATUS, beaconInfo.status);
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_TEMP_LINK, beaconInfo.temp_link);
+        intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_UUID, beaconInfo.uuid_no);
+
+        startActivity(intentScanActivity);
     }
 
     private void addMockBeaconInfoToList(List<BeaconInfo> beaconsList) {
@@ -87,9 +103,15 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        BeaconsListAdapter beaconsListAdapter = new BeaconsListAdapter(beaconsList);
+        BeaconsListAdapter beaconsListAdapter = new BeaconsListAdapter(beaconsList, this);
         mRecyclerView.setAdapter(beaconsListAdapter);
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.HORIZONTAL));
+
+    }
+
+    @Override
+    public void onBeaconSelected(BeaconInfo beaconInfo) {
+        mDashboardViewPresenter.onBeaconSelected(beaconInfo);
     }
 }
