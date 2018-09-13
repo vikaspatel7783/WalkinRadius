@@ -14,7 +14,11 @@ public class BeaconScanViewContract {
 
         void askLocationPermission();
 
+        void askToEnableLocation();
+
         void askBTEnablePermission();
+
+        void finishActivity();
 
         void finishActivityWithMessage(String message);
 
@@ -31,6 +35,8 @@ public class BeaconScanViewContract {
         void onLocationPermissionGrant();
 
         void onBTEnabled(boolean isBTEnabled);
+
+        void onLocationEnabled(boolean isLocationEnabled);
     }
 
 }

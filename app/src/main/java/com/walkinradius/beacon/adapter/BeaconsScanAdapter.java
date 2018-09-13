@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -42,6 +43,19 @@ public class BeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean isLocationPermissionGranted() {
         return  (mContext.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    // only for Kitkat and onwards
+    public boolean isLocationEnabled() {
+        int locationMode = 0;
+
+        try {
+            locationMode = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return locationMode != Settings.Secure.LOCATION_MODE_OFF;
     }
 
     private void initBTAdapter() {

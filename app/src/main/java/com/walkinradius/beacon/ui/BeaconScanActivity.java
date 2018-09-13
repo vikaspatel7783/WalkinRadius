@@ -33,6 +33,7 @@ public class BeaconScanActivity extends ParentActivity implements BeaconScanView
 
     private static final int REQUEST_COARSE_LOCATION = 1;
     private static final int REQUEST_ENABLE_BT = 2;
+
     private String mUUID;
     private int mMajorValue;
     private int mMinorValue;
@@ -85,10 +86,20 @@ public class BeaconScanActivity extends ParentActivity implements BeaconScanView
     }
 
     @Override
+    public void askToEnableLocation() {
+        Intent intent= new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
+    }
+
+    @Override
     public void askBTEnablePermission() {
-        Intent enableBtIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    }
+
+    @Override
+    public void finishActivity() {
+        finish();
     }
 
     @Override

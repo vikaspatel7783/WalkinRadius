@@ -19,10 +19,10 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
     public void onActivityCreated() {
         beaconsScanAdapter = new BeaconsScanAdapter(mScanView, this);
 
-        doBLEScanWithPermissionCheck();
+        doBLEScan();
     }
 
-    private void doBLEScanWithPermissionCheck() {
+    private void doBLEScan() {
 
         if (!beaconsScanAdapter.isBLESupported()) {
             mScanView.showMessage("BLE not supported by this device");
@@ -42,6 +42,12 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
             }
         }
 
+        if (!beaconsScanAdapter.isLocationEnabled()) {
+            mScanView.askToEnableLocation();
+            mScanView.finishActivity();
+            return;
+        }
+
         mScanView.showProgressBar();
 
         try {
@@ -59,15 +65,24 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
 
     @Override
     public void onLocationPermissionGrant() {
-        doBLEScanWithPermissionCheck();
+        doBLEScan();
     }
 
     @Override
     public void onBTEnabled(boolean isBTEnabled) {
         if (isBTEnabled) {
-            doBLEScanWithPermissionCheck();
+            doBLEScan();
         } else {
             mScanView.finishActivityWithMessage("Bluetooth permission must be granted");
+        }
+    }
+
+    @Override
+    public void onLocationEnabled(boolean isLocationEnabled) {
+        if (isLocationEnabled) {
+            doBLEScan();
+        } else {
+            mScanView.finishActivityWithMessage("Location must be enabled.");
         }
     }
 
