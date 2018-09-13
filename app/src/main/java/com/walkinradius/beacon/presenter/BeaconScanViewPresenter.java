@@ -3,13 +3,13 @@ package com.walkinradius.beacon.presenter;
 import android.os.Build;
 import android.util.Log;
 
-import com.walkinradius.beacon.adapter.BeaconsScanAdapter;
+import com.walkinradius.beacon.adapter.RemoteBeaconsScanAdapter;
 import com.walkinradius.beacon.model.BLEScannedDevice;
 
-public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallbacks, BeaconsScanAdapter.OnBLEDeviceScannedCallback {
+public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallbacks, RemoteBeaconsScanAdapter.OnBLEDeviceScannedCallback {
 
     private final BeaconScanViewContract.BeaconScanView mScanView;
-    private BeaconsScanAdapter beaconsScanAdapter;
+    private RemoteBeaconsScanAdapter remoteBeaconsScanAdapter;
 
     public BeaconScanViewPresenter(BeaconScanViewContract.BeaconScanView scanView) {
         this.mScanView = scanView;
@@ -17,32 +17,32 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
 
     @Override
     public void onActivityCreated() {
-        beaconsScanAdapter = new BeaconsScanAdapter(mScanView, this);
+        remoteBeaconsScanAdapter = new RemoteBeaconsScanAdapter(mScanView, this);
 
         doBLEScan();
     }
 
     private void doBLEScan() {
 
-        if (!beaconsScanAdapter.isBLESupported()) {
+        if (!remoteBeaconsScanAdapter.isBLESupported()) {
             mScanView.showMessage("BLE not supported by this device");
             return;
         }
 
-        if (!beaconsScanAdapter.isBLEEnabled()) {
+        if (!remoteBeaconsScanAdapter.isBLEEnabled()) {
             mScanView.askBTEnablePermission();
             return;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!beaconsScanAdapter.isLocationPermissionGranted()) {
+            if (!remoteBeaconsScanAdapter.isLocationPermissionGranted()) {
                 mScanView.askLocationPermission();
                 //mScanView.showMessage("Please enable the location");
                 return;
             }
         }
 
-        if (!beaconsScanAdapter.isLocationEnabled()) {
+        if (!remoteBeaconsScanAdapter.isLocationEnabled()) {
             mScanView.askToEnableLocation();
             mScanView.finishActivity();
             return;
@@ -51,8 +51,8 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
         mScanView.showProgressBar();
 
         try {
-            beaconsScanAdapter.startScan();
-        } catch (BeaconsScanAdapter.BLENotEnabledException e) {
+            remoteBeaconsScanAdapter.startScan();
+        } catch (RemoteBeaconsScanAdapter.BLENotEnabledException e) {
             mScanView.hideProgressBar();
             Log.e(BeaconScanViewPresenter.class.getSimpleName(), e.getMessage());
         }
@@ -60,7 +60,7 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
 
     @Override
     public void onActivityStopped() {
-        beaconsScanAdapter.stopScan();
+        remoteBeaconsScanAdapter.stopScan();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class BeaconScanViewPresenter implements BeaconScanViewContract.ViewCallb
     @Override
     public void onBLEDeviceScanned(BLEScannedDevice bleScannedDevice) {
         mScanView.hideProgressBar();
-        beaconsScanAdapter.stopScan();
+        remoteBeaconsScanAdapter.stopScan();
         mScanView.handleScannedBeaconDevice(bleScannedDevice);
     }
 }

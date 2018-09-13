@@ -13,12 +13,12 @@ import com.walkinradius.beacon.networking.model.BeaconInfo;
 
 import java.util.List;
 
-public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.ViewHolder> {
+public class AccountBeaconsListAdapter extends RecyclerView.Adapter<AccountBeaconsListAdapter.ViewHolder> {
 
     private final BeaconSelectListener mBeaconSelectListener;
     private List<BeaconInfo> mBeaconsInfo;
 
-    public BeaconsListAdapter(List<BeaconInfo> beaconsInfo, BeaconSelectListener beaconSelectListener) {
+    public AccountBeaconsListAdapter(List<BeaconInfo> beaconsInfo, BeaconSelectListener beaconSelectListener) {
         mBeaconsInfo = beaconsInfo;
         this.mBeaconSelectListener = beaconSelectListener;
     }
@@ -45,7 +45,7 @@ public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.
 
     @NonNull
     @Override
-    public BeaconsListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AccountBeaconsListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
         RelativeLayout beacon_view_row = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.template_beacon_list, parent, false);
@@ -54,7 +54,7 @@ public class BeaconsListAdapter extends RecyclerView.Adapter<BeaconsListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BeaconsListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull AccountBeaconsListAdapter.ViewHolder holder, final int position) {
         BeaconInfo beaconInfo = getBeacon(position);
         holder.mTextViewBeaconStatus.setText(beaconInfo.status);
         holder.mTextViewBeaconLocation.setText(beaconInfo.location);

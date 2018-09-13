@@ -12,14 +12,14 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.walkinradius.beacon.R;
-import com.walkinradius.beacon.adapter.BeaconsListAdapter;
+import com.walkinradius.beacon.adapter.AccountBeaconsListAdapter;
 import com.walkinradius.beacon.networking.model.BeaconInfo;
 import com.walkinradius.beacon.presenter.DashboardViewContract;
 import com.walkinradius.beacon.presenter.DashboardViewPresenter;
 
 import java.util.List;
 
-public class DashboardActivity extends ParentActivity implements DashboardViewContract.DashboardView, BeaconsListAdapter.BeaconSelectListener {
+public class DashboardActivity extends ParentActivity implements DashboardViewContract.DashboardView, AccountBeaconsListAdapter.BeaconSelectListener {
 
     private ProgressBar pgBarLogin;
     private RecyclerView mRecyclerView;
@@ -103,8 +103,8 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        BeaconsListAdapter beaconsListAdapter = new BeaconsListAdapter(beaconsList, this);
-        mRecyclerView.setAdapter(beaconsListAdapter);
+        AccountBeaconsListAdapter accountBeaconsListAdapter = new AccountBeaconsListAdapter(beaconsList, this);
+        mRecyclerView.setAdapter(accountBeaconsListAdapter);
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.HORIZONTAL));
 

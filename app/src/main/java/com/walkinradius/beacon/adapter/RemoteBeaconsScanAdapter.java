@@ -15,7 +15,7 @@ import android.util.Log;
 import com.walkinradius.beacon.model.BLEScannedDevice;
 import com.walkinradius.beacon.presenter.BeaconScanViewContract;
 
-public class BeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
+public class RemoteBeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
 
     private final Context mContext;
     private final OnBLEDeviceScannedCallback mOnBLEDeviceScannedCallback;
@@ -23,7 +23,7 @@ public class BeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
 
     private boolean isScanning = false;
 
-    public BeaconsScanAdapter(BeaconScanViewContract.BeaconScanView context, OnBLEDeviceScannedCallback onBLEDeviceScannedCallback) {
+    public RemoteBeaconsScanAdapter(BeaconScanViewContract.BeaconScanView context, OnBLEDeviceScannedCallback onBLEDeviceScannedCallback) {
         this.mContext = (Activity)context;
         this.mOnBLEDeviceScannedCallback = onBLEDeviceScannedCallback;
 
@@ -74,7 +74,7 @@ public class BeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
 
             mBTAdapter.startLeScan(this);
             isScanning = true;
-            Log.d(BeaconsScanAdapter.class.getSimpleName(), "BLE Scanning started...");
+            Log.d(RemoteBeaconsScanAdapter.class.getSimpleName(), "BLE Scanning started...");
         }
     }
 
@@ -83,7 +83,7 @@ public class BeaconsScanAdapter implements BluetoothAdapter.LeScanCallback {
             mBTAdapter.stopLeScan(this);
             mBTAdapter = null;
             isScanning = false;
-            Log.d(BeaconsScanAdapter.class.getSimpleName(), "BLE Scanning stopped.");
+            Log.d(RemoteBeaconsScanAdapter.class.getSimpleName(), "BLE Scanning stopped.");
         }
     }
 
