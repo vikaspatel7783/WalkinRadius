@@ -16,6 +16,7 @@ import com.walkinradius.beacon.adapter.AccountBeaconsListAdapter;
 import com.walkinradius.beacon.networking.model.BeaconInfo;
 import com.walkinradius.beacon.presenter.DashboardViewContract;
 import com.walkinradius.beacon.presenter.DashboardViewPresenter;
+import com.walkinradius.beacon.ui.feasybeacon.FeasyBeaconScanActivity;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class DashboardActivity extends ParentActivity implements DashboardViewCo
 
     @Override
     public void showNextActivity(BeaconInfo beaconInfo) {
-        Intent intentScanActivity = new Intent(this, BeaconScanActivity.class);
+        Intent intentScanActivity = new Intent(this, FeasyBeaconScanActivity.class);
 
         intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_TEMP_NAME, beaconInfo.temp_name);
         intentScanActivity.putExtra(BeaconScanActivity.KEY_BEACON_LOCATION, beaconInfo.location);

@@ -1,1 +1,1 @@
-include ':app', ':networking', ':feasy-beacon-lib'
+include ':app', ':networking'
