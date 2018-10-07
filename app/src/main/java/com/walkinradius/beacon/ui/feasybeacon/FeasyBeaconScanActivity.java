@@ -8,21 +8,30 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.feasycom.bean.BluetoothDeviceWrapper;
 import com.walkinradius.beacon.R;
 import com.walkinradius.beacon.feasybeacon.FeasyBeaconSdkCallback;
 import com.walkinradius.beacon.feasybeacon.FeasyBeaconSdkFacade;
+import com.walkinradius.beacon.feasybeacon.FeasyScanBeaconsListAdapter;
 import com.walkinradius.beacon.presenter.BeaconScanViewPresenter;
 import com.walkinradius.beacon.ui.ParentActivity;
 import com.walkinradius.beacon.ui.UiUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class FeasyBeaconScanActivity extends ParentActivity {
 
@@ -41,13 +50,15 @@ public class FeasyBeaconScanActivity extends ParentActivity {
     private static final int REQUEST_COARSE_LOCATION = 3;
     private static final int REQUEST_ENABLE_LOCATION = 4;
 
-    private String mUUID;
-    private int mMajorValue;
-    private int mMinorValue;
+    private static final int SCAN_TIME_WINDOW_MILLIS = 10000;
 
     private FeasyBeaconSdkFacade mFeasyBeaconSdkFacade;
-    private static final int PERMISSIONS_REQUEST_CODE = 1;
-    private static final int ENABLE_BT_REQUEST_ID = 2;
+    private Button btnScan;
+    private RecyclerView mBeaconsList;
+    private FeasyScanBeaconsListAdapter mFeasyScanBeaconsListAdapter;
+    private HashMap<String, BluetoothDeviceWrapper> mMapScannedFeasyBeacons;
+    private List<BluetoothDeviceWrapper> mListScannedFeasyBeacons;
+
 
     private static String[] REQUIRED_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -59,13 +70,37 @@ public class FeasyBeaconScanActivity extends ParentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beacon_scan);
+        setContentView(R.layout.activity_feasy_beacon_scan);
+        btnScan = (Button)findViewById(R.id.btnScan);
 
         FeasyBeaconSdkFacade.initializeSdk(this);
         mFeasyBeaconSdkFacade = FeasyBeaconSdkFacade.getInstance();
         mFeasyBeaconSdkFacade.setSdkCallback(new ScanCallback(this));
 
         pgBarLogin = findViewById(R.id.pgBarLogin);
+        mListScannedFeasyBeacons = new ArrayList<>();
+
+        mBeaconsList = (RecyclerView) findViewById(R.id.beacons_list);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mBeaconsList.setHasFixedSize(true);
+
+        // use a linear layout manager
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mBeaconsList.setLayoutManager(mLayoutManager);
+
+        mFeasyScanBeaconsListAdapter = new FeasyScanBeaconsListAdapter(mListScannedFeasyBeacons, new BeaconSelectCallback());
+        mBeaconsList.setAdapter(mFeasyScanBeaconsListAdapter);
+
+    }
+
+    private class BeaconSelectCallback implements FeasyScanBeaconsListAdapter.BeaconSelectListener {
+
+        @Override
+        public void onBeaconSelected(BluetoothDeviceWrapper beaconInfo) {
+            Toast.makeText(FeasyBeaconScanActivity.this, "Beacon selected: "+beaconInfo.getName(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -104,9 +139,29 @@ public class FeasyBeaconScanActivity extends ParentActivity {
             return;
         }
 
-        //showProgressBar();
+        showProgressBar();
+        btnScan.setClickable(false);
 
-        mFeasyBeaconSdkFacade.startScan();
+        mListScannedFeasyBeacons.clear();
+        mFeasyScanBeaconsListAdapter.notifyDataSetChanged();
+        mFeasyBeaconSdkFacade.startScan(SCAN_TIME_WINDOW_MILLIS);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mFeasyBeaconSdkFacade.stopScan();
+                btnScan.setClickable(true);
+                FeasyBeaconScanActivity.this.hideProgressBar();
+            }
+        }, SCAN_TIME_WINDOW_MILLIS);
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                checkPreconditionsAndStartScan();
+            }
+        });
     }
 
     @Override
@@ -142,8 +197,30 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         }
 
         @Override
-        public void blePeripheralFound(BluetoothDeviceWrapper device, int rssi, byte[] record) {
-            mFeasyBeaconScanActivity.parseScannedData(device);
+        public void blePeripheralFound(BluetoothDeviceWrapper remoteDevice, int rssi, byte[] record) {
+
+            boolean found = false;
+
+            // Iterate though the list to check same remoteDevice presence.
+            for (BluetoothDeviceWrapper storedDevice :
+                    mFeasyBeaconScanActivity.mListScannedFeasyBeacons) {
+
+                // Same remoteDevice already present in list then update with new remoteDevice info
+                if (storedDevice.getAddress().equals(remoteDevice.getAddress())) {
+                    int indexOfExistingDevice = mFeasyBeaconScanActivity.mListScannedFeasyBeacons.indexOf(storedDevice);
+                    mFeasyBeaconScanActivity.mListScannedFeasyBeacons.set(indexOfExistingDevice, remoteDevice);
+                    found = true;
+                    break; // No need to iterate anymore.
+                }
+            }
+
+            if (!found) {
+                // Add new remoteDevice to list
+                mFeasyBeaconScanActivity.mListScannedFeasyBeacons.add(remoteDevice);
+            }
+
+            // notify adapter to refresh list
+            mFeasyBeaconScanActivity.mFeasyScanBeaconsListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -194,10 +271,6 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
-    public void finishActivity() {
-        finish();
-    }
-
     public void finishActivityWithMessage(String message) {
         DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -217,83 +290,5 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         }
     }
 
-    private void parseScannedData(BluetoothDeviceWrapper bleScannedDevice) {
-
-        //setMajorMinorUUIDValues();
-
-        // Device name
-        TextView name = (TextView) findViewById(R.id.device_name);
-        name.setText("Name: "+bleScannedDevice.getName());
-
-        // MAC address
-        TextView address = (TextView) findViewById(R.id.device_address);
-        address.setText("MAC: " + bleScannedDevice.getAddress());
-
-       /* // UUID
-        TextView uuid = (TextView) findViewById(R.id.device_uuid);
-        uuid.setText("UUID: ");
-
-        // Major
-        TextView major = (TextView) findViewById(R.id.device_major);
-        major.setText("Major: "+mMajorValue);
-
-        // Minor
-        TextView minor = (TextView) findViewById(R.id.device_minor);
-        minor.setText("Minor: "+mMinorValue);*/
-
-
-        TextView rssi = (TextView) findViewById(R.id.device_rssi);
-        rssi.setText("RSSI: " + bleScannedDevice.getRssi());
-    }
-
-    private void setMajorMinorUUIDValues(byte[] scanRecord) {
-        int startByte = 2;
-        boolean patternFound = false;
-        while (startByte <= 5) {
-            if (    ((int) scanRecord[startByte + 2] & 0xff) == 0x02 && //Identifies an iBeacon
-                    ((int) scanRecord[startByte + 3] & 0xff) == 0x15) { //Identifies correct data length
-                patternFound = true;
-                break;
-            }
-            startByte++;
-        }
-
-        if (patternFound) {
-            //Convert to hex String
-            byte[] uuidBytes = new byte[16];
-            System.arraycopy(scanRecord, startByte+4, uuidBytes, 0, 16);
-            String hexString = bytesToHex(uuidBytes);
-
-            //Here is your UUID
-            mUUID =  hexString.substring(0,8) + "-" +
-                    hexString.substring(8,12) + "-" +
-                    hexString.substring(12,16) + "-" +
-                    hexString.substring(16,20) + "-" +
-                    hexString.substring(20,32);
-
-            //Here is your Major value
-            mMajorValue = (scanRecord[startByte+20] & 0xff) * 0x100 + (scanRecord[startByte+21] & 0xff);
-
-            //Here is your Minor value
-            mMinorValue = (scanRecord[startByte+22] & 0xff) * 0x100 + (scanRecord[startByte+23] & 0xff);
-
-        }
-    }
-
-    /**
-     * bytesToHex method
-     * Found on the internet
-     * http://stackoverflow.com/a/9855338
-     */
-    static final char[] hexArray = "0123456789ABCDEF".toCharArray();
-    private static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
 
 }

@@ -50,11 +50,15 @@ public class FeasyBeaconSdkFacade {
         fscBeaconApi.setCallbacks(fscBeaconCallbacks);
     }
 
-    public void startScan() {
-        fscBeaconApi.startScan(15000);
+    public void startScan(int millis) {
+        fscBeaconApi.startScan(millis);
     }
 
     public void stopScan() {
         fscBeaconApi.stopScan();
+    }
+
+    interface ScanCompletedCallback {
+        void onScanCompleted();
     }
 }

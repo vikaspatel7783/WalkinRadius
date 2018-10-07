@@ -16,4 +16,9 @@
     <string name="label_location">LOCATION</string>
     <string name="label_status">STATUS</string>
 
+    <!-- Scanned beacons list -->
+    <string name="label_mac_address">MAC</string>
+    <string name="label_device_name">DEVICE NAME</string>
+    <string name="label_device_rssi">RSSI</string>
+
 </resources>
