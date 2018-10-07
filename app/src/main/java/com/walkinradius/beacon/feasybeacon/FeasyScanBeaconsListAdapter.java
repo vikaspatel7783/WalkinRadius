@@ -28,12 +28,14 @@ public class FeasyScanBeaconsListAdapter extends RecyclerView.Adapter<FeasyScanB
         TextView mTextViewDeviceName;
         TextView mTextViewDeviceAddress;
         TextView mTextViewDeviceRssi;
+        TextView mTextViewDeviceGbeaconUrl;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTextViewDeviceName = itemView.findViewById(R.id.device_name);
             mTextViewDeviceAddress = itemView.findViewById(R.id.device_address);
             mTextViewDeviceRssi = itemView.findViewById(R.id.device_rssi);
+            mTextViewDeviceGbeaconUrl = itemView.findViewById(R.id.device_gbeacon_url);
         }
     }
 
@@ -53,6 +55,10 @@ public class FeasyScanBeaconsListAdapter extends RecyclerView.Adapter<FeasyScanB
         holder.mTextViewDeviceAddress.setText(beaconInfo.getAddress());
         holder.mTextViewDeviceName.setText(beaconInfo.getName());
         holder.mTextViewDeviceRssi.setText(""+beaconInfo.getRssi());
+
+        if (beaconInfo.getgBeacon() != null) {
+            holder.mTextViewDeviceGbeaconUrl.setText(beaconInfo.getgBeacon().getUrl());
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

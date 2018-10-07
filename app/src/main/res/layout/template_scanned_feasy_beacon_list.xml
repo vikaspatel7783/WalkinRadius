@@ -53,6 +53,20 @@
                 android:text="EMPTY RSSI"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_device_gbeacon_url"
+                android:paddingTop="10dp"
+                style="@style/StyleTextLabel"/>
+
+            <TextView
+                android:id="@+id/device_gbeacon_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EMPTY URL"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
 

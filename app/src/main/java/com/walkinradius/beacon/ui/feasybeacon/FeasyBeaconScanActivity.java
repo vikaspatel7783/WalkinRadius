@@ -25,7 +25,6 @@ import com.walkinradius.beacon.R;
 import com.walkinradius.beacon.feasybeacon.FeasyBeaconSdkCallback;
 import com.walkinradius.beacon.feasybeacon.FeasyBeaconSdkFacade;
 import com.walkinradius.beacon.feasybeacon.FeasyScanBeaconsListAdapter;
-import com.walkinradius.beacon.presenter.BeaconScanViewPresenter;
 import com.walkinradius.beacon.ui.ParentActivity;
 import com.walkinradius.beacon.ui.UiUtils;
 
@@ -34,16 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FeasyBeaconScanActivity extends ParentActivity {
-
-    private ProgressBar pgBarLogin;
-    private BeaconScanViewPresenter mBeaconScanViewPresenter;
-
-    public static final String KEY_BEACON_UUID = "BeaconUUID";
-    public static final String KEY_BEACON_MODEL = "BeaconModel";
-    public static final String KEY_BEACON_TEMP_NAME = "BeaconTempName";
-    public static final String KEY_BEACON_TEMP_LINK = "BeaconTempLink";
-    public static final String KEY_BEACON_LOCATION = "BeaconLocation";
-    public static final String KEY_BEACON_STATUS = "BeaconStatus";
 
     private static final int REQUEST_FINE_LOCATION = 1;
     private static final int REQUEST_ENABLE_BT = 2;
@@ -54,6 +43,7 @@ public class FeasyBeaconScanActivity extends ParentActivity {
 
     private FeasyBeaconSdkFacade mFeasyBeaconSdkFacade;
     private Button btnScan;
+    private ProgressBar pgBarLogin;
     private RecyclerView mBeaconsList;
     private FeasyScanBeaconsListAdapter mFeasyScanBeaconsListAdapter;
     private HashMap<String, BluetoothDeviceWrapper> mMapScannedFeasyBeacons;
