@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.feasycom.bean.BluetoothDeviceWrapper;
 import com.walkinradius.beacon.R;
@@ -89,7 +88,13 @@ public class FeasyBeaconScanActivity extends ParentActivity {
 
         @Override
         public void onBeaconSelected(BluetoothDeviceWrapper beaconInfo) {
-            Toast.makeText(FeasyBeaconScanActivity.this, "Beacon selected: "+beaconInfo.getName(), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(FeasyBeaconScanActivity.this, FeasyBeaconInfoActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(FeasyBeaconInfoActivity.KEY_SELECTED_BEACON, beaconInfo);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+            mFeasyBeaconSdkFacade.stopScan();
         }
     }
 

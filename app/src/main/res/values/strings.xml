@@ -22,4 +22,7 @@
     <string name="label_device_rssi">RSSI</string>
     <string name="label_device_gbeacon_url">URL</string>
 
+    <!-- PIN input dialog -->
+    <string name="hint_pin_input">Input PIN</string>
+
 </resources>
