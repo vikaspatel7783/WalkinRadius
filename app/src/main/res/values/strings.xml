@@ -25,4 +25,7 @@
     <!-- PIN input dialog -->
     <string name="hint_pin_input">Input PIN</string>
 
+    <!-- Beacon connect -->
+    <string name="label_beacon_connect_default">CONNECTING...</string>
+
 </resources>

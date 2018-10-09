@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    tools:context=".ui.feasybeacon.FeasyBeaconInfoActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_beaconinfo_pgbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true">
+
+        <ProgressBar
+            android:id="@+id/pgBarBeaconInfo"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/textView_Pgbar_BeaconInfo"
+            style="@style/StyleTextLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="63dp"
+            android:text="@string/label_beacon_connect_default" />
+    </RelativeLayout>
+
+</RelativeLayout>
