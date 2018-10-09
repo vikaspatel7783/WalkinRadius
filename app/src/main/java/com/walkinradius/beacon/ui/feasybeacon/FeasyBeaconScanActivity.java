@@ -44,10 +44,12 @@ public class FeasyBeaconScanActivity extends ParentActivity {
     private Button btnScan;
     private ProgressBar pgBarLogin;
     private RecyclerView mBeaconsList;
+    private ScanCallback mScanCallback;
     private FeasyScanBeaconsListAdapter mFeasyScanBeaconsListAdapter;
     private HashMap<String, BluetoothDeviceWrapper> mMapScannedFeasyBeacons;
     private List<BluetoothDeviceWrapper> mListScannedFeasyBeacons;
 
+    private Handler mHandler = new Handler();
 
     private static String[] REQUIRED_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -64,7 +66,7 @@ public class FeasyBeaconScanActivity extends ParentActivity {
 
         FeasyBeaconSdkFacade.initializeSdk(this);
         mFeasyBeaconSdkFacade = FeasyBeaconSdkFacade.getInstance();
-        mFeasyBeaconSdkFacade.setSdkCallback(new ScanCallback(this));
+        mScanCallback = new ScanCallback(this);
 
         pgBarLogin = findViewById(R.id.pgBarLogin);
         mListScannedFeasyBeacons = new ArrayList<>();
@@ -139,16 +141,10 @@ public class FeasyBeaconScanActivity extends ParentActivity {
 
         mListScannedFeasyBeacons.clear();
         mFeasyScanBeaconsListAdapter.notifyDataSetChanged();
+        mFeasyBeaconSdkFacade.setSdkCallback(mScanCallback);
         mFeasyBeaconSdkFacade.startScan(SCAN_TIME_WINDOW_MILLIS);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mFeasyBeaconSdkFacade.stopScan();
-                btnScan.setClickable(true);
-                FeasyBeaconScanActivity.this.hideProgressBar();
-            }
-        }, SCAN_TIME_WINDOW_MILLIS);
+        mHandler.postDelayed(scanTimeoutRunnable, SCAN_TIME_WINDOW_MILLIS);
 
         btnScan.setOnClickListener(new View.OnClickListener() {
 
@@ -159,9 +155,19 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         });
     }
 
+    Runnable scanTimeoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mFeasyBeaconSdkFacade.stopScan();
+            btnScan.setClickable(true);
+            FeasyBeaconScanActivity.this.hideProgressBar();
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mHandler.removeCallbacks(scanTimeoutRunnable);
         mFeasyBeaconSdkFacade.setSdkCallback(null);
         mFeasyBeaconSdkFacade.stopScan();
     }

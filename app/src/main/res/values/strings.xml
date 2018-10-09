@@ -27,5 +27,10 @@
 
     <!-- Beacon connect -->
     <string name="label_beacon_connect_default">CONNECTING...</string>
+    <string name="label_beacon_connect_successful">CONNECTED</string>
+    <string name="label_beacon_connect_password_check">CHECKING PASSWORD...</string>
+    <string name="label_beacon_connect_password_success">PASSWORD SUCCESS</string>
+    <string name="label_beacon_connect_password_failed">WRONG PASSWORD</string>
+    <string name="label_beacon_connect_time_out">TIMED OUT</string>
 
 </resources>

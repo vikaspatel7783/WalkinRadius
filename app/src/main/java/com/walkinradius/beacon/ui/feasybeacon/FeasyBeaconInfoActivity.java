@@ -1,12 +1,16 @@
 package com.walkinradius.beacon.ui.feasybeacon;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.feasycom.bean.BluetoothDeviceWrapper;
+import com.feasycom.bean.CommandBean;
 import com.feasycom.bean.FeasyBeacon;
 import com.walkinradius.beacon.R;
 import com.walkinradius.beacon.feasybeacon.FeasyBeaconSdkCallback;
@@ -17,10 +21,12 @@ import com.walkinradius.beacon.ui.UiUtils;
 public class FeasyBeaconInfoActivity extends ParentActivity {
 
     public static final String KEY_SELECTED_BEACON = "SELECTED_BEACON";
+    private static final int CONNECT_TIME = 12000; // 12 sec
 
     private String mPin;
     private FeasyBeaconSdkFacade mFeasyBeaconSdkFacade;
     private BluetoothDeviceWrapper mSelectedBeacon;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,15 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
         }
 
         mFeasyBeaconSdkFacade = FeasyBeaconSdkFacade.getInstance();
-        mFeasyBeaconSdkFacade.setSdkCallback(new SdkCallback());
+        mFeasyBeaconSdkFacade.setSdkCallback(new SdkCallback(this));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(checkConnect);
+        mFeasyBeaconSdkFacade.setSdkCallback(null);
+        mFeasyBeaconSdkFacade.disconnect();
     }
 
     public void onPinEntered(String pin) {
@@ -49,8 +63,22 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
         }
         mPin = pin;
 
+        mHandler.postDelayed(checkConnect, CONNECT_TIME);
+        mFeasyBeaconSdkFacade.connectToBeacon(mSelectedBeacon, pin);
+
         showProgressbar(R.string.label_beacon_connect_default);
     }
+
+    Runnable checkConnect = new Runnable() {
+        @Override
+        public void run() {
+            if (!mFeasyBeaconSdkFacade.isConnected()) {
+                mFeasyBeaconSdkFacade.setSdkCallback(null);
+                mFeasyBeaconSdkFacade.disconnect();
+                showMessageAndFinishActivity("Timed-out while connecting.");
+            }
+        }
+    };
 
     private void showProgressbar(int messageId) {
         setProgressLayoutVisibility(true);
@@ -82,6 +110,39 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
 
     private static class SdkCallback extends FeasyBeaconSdkCallback {
 
+        private final FeasyBeaconInfoActivity mFeasyBeaconInfoActivity;
+
+        public SdkCallback(FeasyBeaconInfoActivity activity) {
+            mFeasyBeaconInfoActivity = activity;
+        }
+
+        @Override
+        public void blePeripheralConnected(BluetoothGatt gatt, BluetoothDevice device) {
+            mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_successful);
+        }
+
+        @Override
+        public void connectProgressUpdate(BluetoothDevice device, int status) {
+
+            switch (status) {
+                case CommandBean.PASSWORD_CHECK:
+                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_check);
+                    break;
+
+                case CommandBean.PASSWORD_SUCCESSFULE:
+                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_success);
+                    break;
+
+                case CommandBean.PASSWORD_FAILED:
+                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_failed);
+                    break;
+
+                case CommandBean.PASSWORD_TIME_OUT:
+                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_time_out);
+                    break;
+            }
+
+        }
 
     }
 }

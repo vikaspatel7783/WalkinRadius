@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.ActivityCompat;
 
+import com.feasycom.bean.BluetoothDeviceWrapper;
 import com.feasycom.controler.FscBeaconApiImp;
 import com.feasycom.controler.FscBeaconCallbacks;
 
@@ -56,6 +57,18 @@ public class FeasyBeaconSdkFacade {
 
     public void stopScan() {
         fscBeaconApi.stopScan();
+    }
+
+    public boolean isConnected() {
+        return fscBeaconApi.isConnected();
+    }
+
+    public void disconnect() {
+        fscBeaconApi.disconnect();
+    }
+
+    public void connectToBeacon(BluetoothDeviceWrapper mSelectedBeacon, String pin) {
+        fscBeaconApi.connect(mSelectedBeacon, pin);
     }
 
     interface ScanCompletedCallback {
