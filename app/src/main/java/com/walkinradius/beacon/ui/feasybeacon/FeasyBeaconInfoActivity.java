@@ -21,18 +21,19 @@ import com.walkinradius.beacon.ui.UiUtils;
 public class FeasyBeaconInfoActivity extends ParentActivity {
 
     public static final String KEY_SELECTED_BEACON = "SELECTED_BEACON";
-    private static final int CONNECT_TIME = 12000; // 12 sec
 
     private String mPin;
     private FeasyBeaconSdkFacade mFeasyBeaconSdkFacade;
     private BluetoothDeviceWrapper mSelectedBeacon;
-    private Handler mHandler = new Handler();
+
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_feasy_beacon_info);
+        mHandler = new Handler();
 
         mSelectedBeacon = (BluetoothDeviceWrapper) getIntent().getSerializableExtra(KEY_SELECTED_BEACON);
 
@@ -43,6 +44,7 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
             feasyBeaconPinDialog.show();
         }
 
+        FeasyBeaconSdkFacade.initializeSdk(this);
         mFeasyBeaconSdkFacade = FeasyBeaconSdkFacade.getInstance();
         mFeasyBeaconSdkFacade.setSdkCallback(new SdkCallback(this));
     }
@@ -50,7 +52,6 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacks(checkConnect);
         mFeasyBeaconSdkFacade.setSdkCallback(null);
         mFeasyBeaconSdkFacade.disconnect();
     }
@@ -63,22 +64,10 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
         }
         mPin = pin;
 
-        mHandler.postDelayed(checkConnect, CONNECT_TIME);
         mFeasyBeaconSdkFacade.connectToBeacon(mSelectedBeacon, pin);
 
         showProgressbar(R.string.label_beacon_connect_default);
     }
-
-    Runnable checkConnect = new Runnable() {
-        @Override
-        public void run() {
-            if (!mFeasyBeaconSdkFacade.isConnected()) {
-                mFeasyBeaconSdkFacade.setSdkCallback(null);
-                mFeasyBeaconSdkFacade.disconnect();
-                showMessageAndFinishActivity("Timed-out while connecting.");
-            }
-        }
-    };
 
     private void showProgressbar(int messageId) {
         setProgressLayoutVisibility(true);
@@ -87,7 +76,7 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
         textViewPgBar.setText(getString(messageId));
     }
 
-    private void hidProgressbar() {
+    private void hideProgressbar() {
         setProgressLayoutVisibility(false);
     }
 
@@ -106,6 +95,7 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
         };
 
         UiUtils.getAlertDialog(this, "BEACON INPUT PIN", message, clickListener).show();
+        hideProgressbar();
     }
 
     private static class SdkCallback extends FeasyBeaconSdkCallback {
@@ -118,30 +108,70 @@ public class FeasyBeaconInfoActivity extends ParentActivity {
 
         @Override
         public void blePeripheralConnected(BluetoothGatt gatt, BluetoothDevice device) {
-            mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_successful);
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_successful);
+                    //TODO: get the beacon information
+                }
+            };
+            postOnUI(runnable);
         }
 
         @Override
         public void connectProgressUpdate(BluetoothDevice device, int status) {
 
+            Runnable runnable;
+
             switch (status) {
                 case CommandBean.PASSWORD_CHECK:
-                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_check);
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_check);
+                        }
+                    };
+                    postOnUI(runnable);
                     break;
 
                 case CommandBean.PASSWORD_SUCCESSFULE:
-                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_success);
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_success);
+                            //TODO: get the beacon information
+                        }
+                    };
+                    postOnUI(runnable);
                     break;
 
                 case CommandBean.PASSWORD_FAILED:
-                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_password_failed);
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mFeasyBeaconInfoActivity.hideProgressbar();
+                            mFeasyBeaconInfoActivity.showMessageAndFinishActivity(
+                                    mFeasyBeaconInfoActivity.getString(R.string.label_beacon_connect_password_failed));
+                        }
+                    };
+                    postOnUI(runnable);
                     break;
 
                 case CommandBean.PASSWORD_TIME_OUT:
-                    mFeasyBeaconInfoActivity.showProgressbar(R.string.label_beacon_connect_time_out);
+                    runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mFeasyBeaconInfoActivity.hideProgressbar();
+                            mFeasyBeaconInfoActivity.showMessageAndFinishActivity("Timed-Out. \nCould not connect to Beacon.");
+                        }
+                    };
+                    postOnUI(runnable);
                     break;
             }
+        }
 
+        private void postOnUI(Runnable runnable) {
+            mFeasyBeaconInfoActivity.mHandler.post(runnable);
         }
 
     }

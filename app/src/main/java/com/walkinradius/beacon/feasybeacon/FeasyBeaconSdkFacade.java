@@ -64,11 +64,17 @@ public class FeasyBeaconSdkFacade {
     }
 
     public void disconnect() {
-        fscBeaconApi.disconnect();
+        if (fscBeaconApi.isConnected()) {
+            fscBeaconApi.disconnect();
+        }
     }
 
     public void connectToBeacon(BluetoothDeviceWrapper mSelectedBeacon, String pin) {
         fscBeaconApi.connect(mSelectedBeacon, pin);
+    }
+
+    public void setConnect(boolean isBeaconConnectable) {
+        fscBeaconApi.setConnectable(isBeaconConnectable);
     }
 
     interface ScanCompletedCallback {

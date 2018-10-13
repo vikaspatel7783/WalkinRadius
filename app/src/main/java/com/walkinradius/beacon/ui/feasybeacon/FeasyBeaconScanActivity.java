@@ -90,13 +90,14 @@ public class FeasyBeaconScanActivity extends ParentActivity {
 
         @Override
         public void onBeaconSelected(BluetoothDeviceWrapper beaconInfo) {
+
+            mFeasyBeaconSdkFacade.stopScan();
+
             Intent intent = new Intent(FeasyBeaconScanActivity.this, FeasyBeaconInfoActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(FeasyBeaconInfoActivity.KEY_SELECTED_BEACON, beaconInfo);
             intent.putExtras(bundle);
             startActivity(intent);
-
-            mFeasyBeaconSdkFacade.stopScan();
         }
     }
 
