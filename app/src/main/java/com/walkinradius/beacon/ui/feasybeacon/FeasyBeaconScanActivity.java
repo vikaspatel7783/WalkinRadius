@@ -92,6 +92,7 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         public void onBeaconSelected(BluetoothDeviceWrapper beaconInfo) {
 
             mFeasyBeaconSdkFacade.stopScan();
+            mFeasyBeaconSdkFacade.setSdkCallback(null);
 
             Intent intent = new Intent(FeasyBeaconScanActivity.this, FeasyBeaconInfoActivity.class);
             Bundle bundle = new Bundle();
@@ -201,19 +202,26 @@ public class FeasyBeaconScanActivity extends ParentActivity {
         @Override
         public void blePeripheralFound(BluetoothDeviceWrapper remoteDevice, int rssi, byte[] record) {
 
+            // supporting on gBeacon (Eddystone)
+            if (null == remoteDevice.getgBeacon()) {
+                return;
+            }
+
             boolean found = false;
 
             // Iterate though the list to check same remoteDevice presence.
             for (BluetoothDeviceWrapper storedDevice :
                     mFeasyBeaconScanActivity.mListScannedFeasyBeacons) {
 
-                // Same remoteDevice already present in list then update with new remoteDevice info
-                if (storedDevice.getAddress().equals(remoteDevice.getAddress())) {
+                // supporting on gBeacon (Eddystone)
+                if (storedDevice.getgBeacon().getUrl().equals(remoteDevice.getgBeacon().getUrl())) {
                     int indexOfExistingDevice = mFeasyBeaconScanActivity.mListScannedFeasyBeacons.indexOf(storedDevice);
                     mFeasyBeaconScanActivity.mListScannedFeasyBeacons.set(indexOfExistingDevice, remoteDevice);
                     found = true;
                     break; // No need to iterate anymore.
                 }
+
+                // Same remoteDevice already present in list then update with new remoteDevice info
             }
 
             if (!found) {
